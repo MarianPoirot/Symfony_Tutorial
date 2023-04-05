@@ -2,10 +2,11 @@
 
 namespace App\Controller;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class QuestionController
+class QuestionController extends AbstractController
 {
     /**
      * @Route("/")
@@ -19,6 +20,16 @@ class QuestionController
      */
     public function show($slugulusErecto)
     {
-        return new Response(sprintf('%s Feur :)',ucwords(str_replace('-', ' ', $slugulusErecto))));
+        $answers = [
+            'Agagak',
+            'agagougouk',
+            'Ougougagak',
+        ];
+
+        return $this->render('question/show.html.twig',
+            [   'question' => ucwords(str_replace('-', ' ', $slugulusErecto)),
+                'answers' => $answers,
+            ]);
+        #return new Response(sprintf('%s Feur :)',ucwords(str_replace('-', ' ', $slugulusErecto))));
     }
 }
