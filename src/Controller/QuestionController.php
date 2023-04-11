@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\QuestionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,11 +15,21 @@ class QuestionController extends AbstractController
     /**
      * @Route("/", name="app_homepage")
      */
-    public function homepage(Environment $twigEnvironment){
+    public function homepage(QuestionRepository $repository){
+    #public function homepage(Environment $twigEnvironment, EntityManagerInterface $entityManager){
+        //On peut utiliser entityManager pour l'autowiring, ou appeler directement le bon repository
+        #$repository = $entityManager->getRepository(Question::class);
+
+        $questions = $repository->findAllAskedOrderedByNewest();
+        #$questions = $repository->findBy([], ['askedAt' => 'DESC']);
+        #$questions = $repository->findAll();
+        return $this->render('question/homepage.html.twig', [
+            'questions' => $questions,
+        ]);
 
         //Using twig service directly
-        $html = $twigEnvironment->render('question/homepage.html.twig');
-        return new Response($html);
+        #$html = $twigEnvironment->render('question/homepage.html.twig');
+        #return new Response($html);
         //Using twig Recipe
         #return $this ->render('question/homepage.html.twig');
         //Using hardcoded HTML
@@ -57,20 +68,31 @@ EOF
     /**
      * @Route("/questions/{slugulusErecto}", name="app_question_show")
      */
-    public function show($slugulusErecto)
+    public function show($slugulusErecto, EntityManagerInterface $entityManager)
     {
+        $repository = $entityManager->getRepository(Question::class);
+        /** @var Question|null $question */
+        $question = $repository->findOneBy(['slug' => $slugulusErecto]);
+
+        if (!$question) {
+            throw $this->createNotFoundException(sprintf('no question found for slug "%s"', $slugulusErecto));
+        }
+
         $answers = [
             'Agagak',
             'agagougouk',
             'Ougougagak',
         ];
 
-        dump($this);
+        return $this->render('question/show.html.twig', [
+            'question' => $question,
+            'answers' => $answers,
+        ]);
 
-        return $this->render('question/show.html.twig',
+        /*return $this->render('question/show.html.twig',
             [   'question' => ucwords(str_replace('-', ' ', $slugulusErecto)),
                 'answers' => $answers,
-            ]);
+            ]);*/
         #return new Response(sprintf('%s Feur :)',ucwords(str_replace('-', ' ', $slugulusErecto))));
     }
 }

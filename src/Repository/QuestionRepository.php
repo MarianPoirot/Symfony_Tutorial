@@ -54,6 +54,16 @@ class QuestionRepository extends ServiceEntityRepository
 //        ;
 //    }
 
+    public function findAllAskedOrderedByNewest(){
+        return $this->createQueryBuilder('q')
+            ->andWhere('q.askedAt IS NOT NULL')
+            ->orderBy('q.askedAt', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
 //    public function findOneBySomeField($value): ?Question
 //    {
 //        return $this->createQueryBuilder('q')
