@@ -5,10 +5,13 @@ namespace App\Entity;
 use App\Repository\QuestionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: QuestionRepository::class)]
 class Question
 {
+    use TimestampableEntity;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -17,6 +20,7 @@ class Question
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Gedmo\Slug(fields: ["name"])]
     #[ORM\Column(length: 100, unique: true)]
     private ?string $slug = null;
 
