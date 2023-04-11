@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\QuestionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
@@ -40,7 +41,9 @@ class QuestionController extends AbstractController
      * @Route("/questions/new")
      */
     public function new(EntityManagerInterface $entityManager){
-        $question = new Question();
+
+        return new Response('Sounds like a GREAT feature dor V2!');
+        /*$question = new Question();
         $question->setName('Missing pants')
             ->setSlug('missing-pants-'.rand(0, 1000))
             ->setQuestion(<<<EOF
@@ -56,6 +59,8 @@ EOF
         if (rand(1, 10) > 2) {
             $question->setAskedAt(new \DateTime(sprintf('-%d days', rand(1, 100))));
         }
+        $question->setVotes(rand(-20,50));
+
         $entityManager->persist($question);
         $entityManager->flush();
         return new Response(sprintf(
@@ -63,13 +68,13 @@ EOF
             $question->getId(),
             $question->getSlug()
         ));return new response('Time for some Doctrine magic!');
+        */
     }
 
     /**
      * @Route("/questions/{slugulusErecto}", name="app_question_show")
      */
-    public function show($slugulusErecto, EntityManagerInterface $entityManager)
-    {
+    public function show($slugulusErecto, EntityManagerInterface $entityManager){
         $repository = $entityManager->getRepository(Question::class);
         /** @var Question|null $question */
         $question = $repository->findOneBy(['slug' => $slugulusErecto]);
@@ -94,5 +99,31 @@ EOF
                 'answers' => $answers,
             ]);*/
         #return new Response(sprintf('%s Feur :)',ucwords(str_replace('-', ' ', $slugulusErecto))));
+    }
+
+    /**
+     * @Route("//questions/{slugulusErecto}/vote", name="app_question_vote", methods="POST")
+     */
+    #if an endpoint changes data on the server, it should not allow GET requests.
+    public function questionVote(Request $request,$slugulusErecto, EntityManagerInterface $entityManager)
+    {
+        $repository = $entityManager->getRepository(Question::class);
+        $question = $repository->findOneBy(['slug' => $slugulusErecto]);
+        $direction = $request->request->get('direction');
+
+        if ($direction === 'up') {
+            $question->upVote();
+            #$question->setVotes($question->getVotes() + 1);
+        } elseif ($direction === 'down') {
+            $question->downVote();
+            #$question->setVotes($question->getVotes() - 1);
+        }
+
+        $entityManager->persist($question);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_question_show', [
+            'slugulusErecto' => $question->getSlug()
+        ]);
     }
 }
