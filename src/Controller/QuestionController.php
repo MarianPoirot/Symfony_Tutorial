@@ -102,7 +102,7 @@ EOF
     }
 
     /**
-     * @Route("//questions/{slugulusErecto}/vote", name="app_question_vote", methods="POST")
+     * @Route("/questions/{slugulusErecto}/vote", name="app_question_vote", methods="POST")
      */
     #if an endpoint changes data on the server, it should not allow GET requests.
     public function questionVote(Request $request,$slugulusErecto, EntityManagerInterface $entityManager)

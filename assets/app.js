@@ -14,6 +14,7 @@ import $ from 'jquery';
 /**
  * Simple (ugly) code to handle the comment vote up/down
  */
+/*
 var $container = $('.js-vote-arrows');
 $container.find('a').on('click', function(e) {
     e.preventDefault();
@@ -25,4 +26,4 @@ $container.find('a').on('click', function(e) {
     }).then(function(data) {
         $container.find('.js-vote-total').text(data.votes);
     });
-});
+});*/

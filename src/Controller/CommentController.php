@@ -15,7 +15,7 @@ class CommentController extends AbstractController
     public function commentVote($id,$direction, LoggerInterface $logger)
     {
         //TODO
-        //use id to query database and real lodic to save in database
+        //use id to query database and real logic to save in database
 
         if ($direction == 'up') {
             $logger->info('Voting up');
