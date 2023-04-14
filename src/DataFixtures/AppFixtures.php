@@ -18,7 +18,17 @@ class AppFixtures extends Fixture
             ->createMany(5)
         ;
 
-        UserFactory::createone(['email' => 'admin@example.com', 'plainPassword' => 'admin']);
+        UserFactory::createone([
+            'email' => 'admin@example.com',
+            'plainPassword' => 'admin',
+            'roles'=> ['ROLE_ADMIN'],
+        ]);
+
+        UserFactory::createone([
+            'email' => 'user@example.com',
+            'plainPassword' => 'user',
+        ]);
+
         UserFactory::createMany(10);
         #QuestionFactory::new()->create();
 

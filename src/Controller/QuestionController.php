@@ -41,6 +41,7 @@ class QuestionController extends AbstractController
      * @Route("/questions/new")
      */
     public function new(EntityManagerInterface $entityManager){
+        $this->denyAccessUnlessGranted('Role_User');
 
         return new Response('Sounds like a GREAT feature dor V2!');
         /*$question = new Question();
