@@ -33,6 +33,10 @@ class Question
     #[ORM\Column]
     private int $votes = 0;
 
+    #[ORM\ManyToOne(inversedBy: 'questions')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $owner = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -113,6 +117,18 @@ class Question
     public function downVote(): self
     {
         $this->votes--;
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): self
+    {
+        $this->owner = $owner;
+
         return $this;
     }
 }

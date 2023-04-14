@@ -12,12 +12,6 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        QuestionFactory::new()->createMany(20);
-        QuestionFactory::new()
-            ->unpublished()
-            ->createMany(5)
-        ;
-
         UserFactory::createone([
             'email' => 'admin@example.com',
             'plainPassword' => 'admin',
@@ -30,6 +24,16 @@ class AppFixtures extends Fixture
         ]);
 
         UserFactory::createMany(10);
+
+        QuestionFactory::new()->createMany(20, function() {
+            return [
+                'owner' => UserFactory::random(),
+                ];
+        });
+        QuestionFactory::new()
+            ->unpublished()
+            ->createMany(5)
+        ;
         #QuestionFactory::new()->create();
 
         /*$question = new Question();
