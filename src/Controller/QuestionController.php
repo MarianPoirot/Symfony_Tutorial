@@ -127,4 +127,30 @@ EOF
             'slugulusErecto' => $question->getSlug()
         ]);
     }
+
+    /**
+     * @Route("/questions/edit/{slugulusErecto}", name="app_question_edit")
+     */
+    public function edit($slugulusErecto, EntityManagerInterface $entityManager){
+        $repository = $entityManager->getRepository(Question::class);
+        /** @var Question|null $question */
+        $question = $repository->findOneBy(['slug' => $slugulusErecto]);
+
+        if (!$question) {
+            throw $this->createNotFoundException(sprintf('no question found for slug "%s"', $slugulusErecto));
+        }
+
+        $this->denyAccessUnlessGranted('EDIT', $question);
+
+        /*$this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
+        if ($question->getOwner() !== $this->getUser()){
+            throw $this->createAccessDeniedException("You are not the owner");
+        }*/
+
+
+        return $this->render('question/edit.html.twig', [
+            'question' => $question,
+        ]);
+    }
 }
