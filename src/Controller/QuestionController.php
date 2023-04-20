@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\AnswerRepository;
 use App\Repository\QuestionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -80,26 +81,18 @@ EOF
         /** @var Question|null $question */
         $question = $repository->findOneBy(['slug' => $slugulusErecto]);
 
+        //$answers = $answerRepository->findBy(['question' => $question]);
+        // or
+        $answers = $question->getAnswers();
+
         if (!$question) {
             throw $this->createNotFoundException(sprintf('no question found for slug "%s"', $slugulusErecto));
         }
-
-        $answers = [
-            'Agagak',
-            'agagougouk',
-            'Ougougagak',
-        ];
 
         return $this->render('question/show.html.twig', [
             'question' => $question,
             'answers' => $answers,
         ]);
-
-        /*return $this->render('question/show.html.twig',
-            [   'question' => ucwords(str_replace('-', ' ', $slugulusErecto)),
-                'answers' => $answers,
-            ]);*/
-        #return new Response(sprintf('%s Feur :)',ucwords(str_replace('-', ' ', $slugulusErecto))));
     }
 
     /**
