@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Repository\AnswerRepository;
 use App\Repository\QuestionRepository;
+use App\Service\MarkdownHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
@@ -11,7 +11,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Twig\Environment;
 use App\Entity\Question;
 
 class QuestionController extends AbstractController
@@ -91,7 +90,7 @@ EOF
     /**
      * @Route("/questions/{slugulusErecto}", name="app_question_show")
      */
-    public function show($slugulusErecto, EntityManagerInterface $entityManager){
+    public function show($slugulusErecto, EntityManagerInterface $entityManager, MarkdownHelper $markdownHelper){
         $repository = $entityManager->getRepository(Question::class);
         /** @var Question|null $question */
         $question = $repository->findOneBy(['slug' => $slugulusErecto]);
@@ -99,6 +98,8 @@ EOF
         //$answers = $answerRepository->findBy(['question' => $question]);
         // or
         $answers = $question->getAnswers();
+
+        $parsedQuestionText = $markdownHelper->parse($question->getQuestion());
 
         if (!$question) {
             throw $this->createNotFoundException(sprintf('no question found for slug "%s"', $slugulusErecto));

@@ -13,6 +13,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.14",
         "endroid/qr-code": "*",
+        "knplabs/knp-markdown-bundle": "^1.10",
         "knplabs/knp-time-bundle": "1.19.0",
         "pagerfanta/doctrine-orm-adapter": "*",
         "pagerfanta/twig": "*",
