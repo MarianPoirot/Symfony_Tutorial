@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Repository\AnswerRepository;
 use App\Repository\QuestionRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,19 +17,32 @@ use App\Entity\Question;
 class QuestionController extends AbstractController
 {
     /**
-     * @Route("/", name="app_homepage")
+     * @Route("/{page<\d+>}", name="app_homepage")
      */
-    public function homepage(QuestionRepository $repository){
+    public function homepage(QuestionRepository $repository, int $page=1){
     #public function homepage(Environment $twigEnvironment, EntityManagerInterface $entityManager){
         //On peut utiliser entityManager pour l'autowiring, ou appeler directement le bon repository
         #$repository = $entityManager->getRepository(Question::class);
 
-        $questions = $repository->findAllAskedOrderedByNewest();
+        $queryBuilder = $repository->createAskedOrderedByNewestQueryBuilder();
+
+        $pagerfanta = new Pagerfanta(
+            new QueryAdapter($queryBuilder)
+        );
+        $pagerfanta->setMaxPerPage(5);
+        $pagerfanta->setCurrentPage($page);
+
+        return $this->render('question/homepage.html.twig', [
+            'pager' => $pagerfanta,
+        ]);
+
+        #$questions = $repository->findAllAskedOrderedByNewest();
         #$questions = $repository->findBy([], ['askedAt' => 'DESC']);
         #$questions = $repository->findAll();
-        return $this->render('question/homepage.html.twig', [
-            'questions' => $questions,
-        ]);
+
+        #return $this->render('question/homepage.html.twig', [
+        #    'questions' => $questions,
+        #]);
 
         //Using twig service directly
         #$html = $twigEnvironment->render('question/homepage.html.twig');

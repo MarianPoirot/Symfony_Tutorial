@@ -55,6 +55,7 @@ class QuestionRepository extends ServiceEntityRepository
 //        ;
 //    }
 
+    /*
     public function findAllAskedOrderedByNewest(){
         return $this->addIsAskedQueryBuilder()
             ->orderBy('q.askedAt', 'DESC')
@@ -64,12 +65,22 @@ class QuestionRepository extends ServiceEntityRepository
             ->getResult()
             ;
 
-        /*return $this->createQueryBuilder('q')
-            ->andWhere('q.askedAt IS NOT NULL')
+        //return $this->createQueryBuilder('q')
+        //    ->andWhere('q.askedAt IS NOT NULL')
+        //    ->orderBy('q.askedAt', 'DESC')
+        //    ->getQuery()
+        //    ->getResult()
+        //    ;
+    }*/
+
+
+    public function createAskedOrderedByNewestQueryBuilder(): QueryBuilder{
+        return $this->addIsAskedQueryBuilder()
             ->orderBy('q.askedAt', 'DESC')
-            ->getQuery()
-            ->getResult()
-            ;*/
+            ->leftJoin('q.tags','tag')
+            ->addSelect('tag')
+
+            ;
     }
 
     private function addIsAskedQueryBuilder(QueryBuilder $qb = null): QueryBuilder
